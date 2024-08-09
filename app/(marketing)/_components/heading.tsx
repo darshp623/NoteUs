@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { SignInButton } from "@clerk/clerk-react";
-import { useConvexAuth } from "convex/react";
+import { SignInButton, useAuth } from "@clerk/clerk-react"; 
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export const Heading = () => {
-  const { isAuthenticated, isLoading } = useConvexAuth();
+  const { isSignedIn, isLoaded } = useAuth(); 
+
   return (
     <div className="max-w-3xl space-y-4">
       <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold">
@@ -19,12 +19,14 @@ export const Heading = () => {
         NoteUs is a connected workspace where <br />
         better, faster, work happens.
       </h3>
-      {isLoading && (
+      
+      {!isLoaded && (
         <div className="w-full flex items-center justify-center">
           <Spinner size="lg"/>
         </div>
       )}
-      {isAuthenticated && !isLoading && (
+      
+      {isSignedIn && isLoaded && (
         <Button asChild>
           <Link href="/documents">
             Enter NoteUs
@@ -32,7 +34,8 @@ export const Heading = () => {
           </Link>
         </Button>
       )}
-      {!isAuthenticated && !isLoading && (
+      
+      {!isSignedIn && isLoaded && (
         <SignInButton mode="modal">
           <Button>
             Get NoteUs Free
