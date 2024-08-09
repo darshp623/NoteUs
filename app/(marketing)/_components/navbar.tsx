@@ -4,24 +4,24 @@ import { useScrollTop } from "@/hooks/use-scroll-top";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 import { ModeToggle } from "@/components/ui/mode-toggle";
-import { useConvexAuth } from "convex/react";
+import { useAuth } from "@clerk/clerk-react"; 
 import { SignInButton, UserButton } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 
 export const Navbar = () => {
-    const { isAuthenticated, isLoading } = useConvexAuth();
+    const { isSignedIn, isLoaded } = useAuth();
     const scrolled = useScrollTop();
-    return(
+    
+    return (
         <div className={cn("z-50 bg-background dark:bg-[#1F1F1F] fixed top-0 flex items-center w-full p-6",
             scrolled && "border-b shadow-sm")}>
-            <Logo/>
+            <Logo />
             <div className="md:ml-auto md:justify-end justify-between w-full flex items-center gap-x-2">
-                {isLoading && (
-                    <Spinner/>
-                )}
-                {!isAuthenticated && !isLoading && (
+                {!isLoaded && <Spinner />}
+                
+                {!isSignedIn && isLoaded && (
                     <>
                         <SignInButton mode="modal">
                             <Button variant="ghost" size="sm">
@@ -35,20 +35,20 @@ export const Navbar = () => {
                         </SignInButton>
                     </>
                 )}
-                {isAuthenticated && !isLoading && (
+                
+                {isSignedIn && isLoaded && (
                     <>
-                    <Button variant="ghost" size="sm" asChild>
-                        <Link href="/documents">
-                        Enter NoteUs
-                        </Link>
-                    </Button>
-                    <UserButton 
-                        afterSignOutUrl="/" 
-                    />
+                        <Button variant="ghost" size="sm" asChild>
+                            <Link href="/documents">
+                                Enter NoteUs
+                            </Link>
+                        </Button>
+                        <UserButton afterSignOutUrl="/" />
                     </>
                 )}
-                <ModeToggle/>
+                
+                <ModeToggle />
             </div>
         </div>
-    )
-}
+    );
+};
